@@ -155,9 +155,10 @@ class GenZJobSearcher:
         }
     }
 
-    def __init__(self, database_url='sqlite:///job_board.db'):
-        self.aggregator = JobAggregator(database_url=database_url)
+    def __init__(self, database_url='sqlite:///job_board.db', us_only=True):
+        self.aggregator = JobAggregator(database_url=database_url, us_only=us_only)
         self.indeed_scraper = None
+        self.us_only = us_only
 
         # Initialize Indeed scraper if API key available
         rapidapi_key = os.getenv('RAPIDAPI_KEY')
@@ -173,6 +174,8 @@ class GenZJobSearcher:
             'new_jobs_added': 0,
             'last_run': None
         }
+
+        print(f"Gen-Z Job Searcher initialized (US only: {us_only})")
 
     def search_with_rate_limit(self, source: str, keyword: str, category: str = None):
         """
@@ -195,9 +198,18 @@ class GenZJobSearcher:
             if source == 'indeed_rapidapi' and self.indeed_scraper:
                 results = self.indeed_scraper.scrape(
                     keyword=keyword,
-                    location='Remote',
+                    location='United States',  # Specify US for Indeed
                     max_results=50
                 )
+
+                # Filter for US jobs if enabled
+                if self.us_only:
+                    from location_filter import filter_us_jobs
+                    before_filter = len(results)
+                    results = filter_us_jobs(results)
+                    filtered = before_filter - len(results)
+                    if filtered > 0:
+                        logger.info(f"Filtered {filtered} non-US jobs from Indeed")
 
                 # Add to database
                 new_count = 0

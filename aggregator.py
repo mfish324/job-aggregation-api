@@ -6,6 +6,7 @@ from scrapers import (
     IndeedScraper, AngelListScraper, CrunchboardScraper
 )
 from models import DatabaseManager
+from location_filter import is_us_location, filter_us_jobs
 from typing import List, Dict
 import time
 
@@ -13,11 +14,12 @@ import time
 class JobAggregator:
     """Main aggregator class that coordinates all scrapers"""
 
-    def __init__(self, database_url=None):
+    def __init__(self, database_url=None, us_only=True):
         load_dotenv()
 
         self.database_url = database_url or os.getenv('DATABASE_URL', 'sqlite:///jobs.db')
         self.db = DatabaseManager(self.database_url)
+        self.us_only = us_only  # Filter for US jobs only
 
         # Initialize scrapers
         self.scrapers = {
@@ -78,6 +80,14 @@ class JobAggregator:
 
             try:
                 jobs = scraper.scrape(keywords=keywords, location=location, max_pages=max_pages)
+
+                # Filter for US jobs if enabled
+                filtered_count = 0
+                if self.us_only:
+                    before_filter = len(jobs)
+                    jobs = filter_us_jobs(jobs)
+                    filtered_count = before_filter - len(jobs)
+
                 scraped_count = len(jobs)
                 new_count = 0
                 duplicate_count = 0
@@ -90,7 +100,10 @@ class JobAggregator:
                         duplicate_count += 1
 
                 elapsed = time.time() - start_time
-                print(f"[OK] ({scraped_count} found, {new_count} new, {duplicate_count} duplicates) - {elapsed:.1f}s")
+                if filtered_count > 0:
+                    print(f"[OK] ({scraped_count} US jobs, {new_count} new, {duplicate_count} duplicates, {filtered_count} non-US filtered) - {elapsed:.1f}s")
+                else:
+                    print(f"[OK] ({scraped_count} found, {new_count} new, {duplicate_count} duplicates) - {elapsed:.1f}s")
 
                 stats['total_scraped'] += scraped_count
                 stats['total_new'] += new_count
