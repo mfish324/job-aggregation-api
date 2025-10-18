@@ -1,0 +1,15 @@
+# Commands to push to GitHub
+
+# Step 1: Go to https://github.com/new and create a new repository named "job-aggregation-api"
+# - Do NOT initialize with README, .gitignore, or license
+# - Make it Public or Private (your choice)
+
+# Step 2: After creating the repo, run these commands in your terminal:
+
+git remote add origin https://github.com/mfish324/job-aggregation-api.git
+git branch -M main
+git push -u origin main
+
+# If your username is different, replace "mfish324" with your GitHub username
+
+# That's it! Your code will be on GitHub and accessible from any project.

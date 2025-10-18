@@ -334,6 +334,126 @@ async def import_from_aggregator():
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.get("/genz/profiles")
+async def get_genz_profiles():
+    """
+    Get all available Gen-Z search profiles
+
+    Returns list of targeted search profiles for entry-level and mid-level jobs
+    in tech, finance, marketing, etc.
+    """
+    from scheduled_scraper import GenZJobSearcher
+    return {
+        "profiles": list(GenZJobSearcher.SEARCH_PROFILES.keys()),
+        "profile_details": GenZJobSearcher.SEARCH_PROFILES,
+        "total_profiles": len(GenZJobSearcher.SEARCH_PROFILES)
+    }
+
+@app.post("/genz/search/{profile_name}")
+async def run_genz_search(
+    profile_name: str,
+    background_tasks: BackgroundTasks,
+    max_keywords: Optional[int] = Query(3, ge=1, le=10, description="Max keywords to search per profile")
+):
+    """
+    Trigger a Gen-Z targeted search for a specific profile
+
+    Available profiles: entry_tech, mid_tech, entry_finance, mid_finance,
+    entry_data, mid_data, entry_marketing, mid_marketing, entry_design, entry_sales
+
+    This runs in the background and respects API rate limits.
+    """
+    from scheduled_scraper import GenZJobSearcher
+
+    if profile_name not in GenZJobSearcher.SEARCH_PROFILES:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Profile '{profile_name}' not found. Available: {list(GenZJobSearcher.SEARCH_PROFILES.keys())}"
+        )
+
+    # Run search in background
+    def run_search():
+        searcher = GenZJobSearcher()
+        stats = searcher.run_search_profile(profile_name, max_keywords=max_keywords)
+        # Import results to job board
+        job_api.import_from_aggregator()
+        return stats
+
+    background_tasks.add_task(run_search)
+
+    return {
+        "status": "started",
+        "profile": profile_name,
+        "max_keywords": max_keywords,
+        "message": f"Gen-Z search for '{profile_name}' started in background. Check /stats for results."
+    }
+
+@app.post("/genz/search-all")
+async def run_all_genz_searches(
+    background_tasks: BackgroundTasks,
+    max_keywords_per_profile: Optional[int] = Query(3, ge=1, le=10, description="Max keywords per profile")
+):
+    """
+    Trigger Gen-Z searches across ALL profiles
+
+    Searches for entry-level and mid-level jobs in:
+    - Tech/Programming
+    - Finance
+    - Data Science
+    - Marketing
+    - Design
+    - Sales
+
+    Respects rate limits for all APIs. Runs in background.
+    """
+    from scheduled_scraper import GenZJobSearcher
+
+    def run_all_searches():
+        searcher = GenZJobSearcher()
+        stats = searcher.run_all_profiles(max_keywords_per_profile=max_keywords_per_profile)
+        # Import results to job board
+        job_api.import_from_aggregator()
+        return stats
+
+    background_tasks.add_task(run_all_searches)
+
+    return {
+        "status": "started",
+        "total_profiles": len(GenZJobSearcher.SEARCH_PROFILES),
+        "max_keywords_per_profile": max_keywords_per_profile,
+        "message": "Gen-Z searches started in background across all profiles. This will take several hours due to rate limiting."
+    }
+
+@app.post("/genz/search-priority")
+async def run_priority_genz_searches(background_tasks: BackgroundTasks):
+    """
+    Run priority Gen-Z searches (entry tech, mid tech, entry finance, entry data)
+
+    Focuses on the most important job categories for Gen-Z:
+    - Entry-level tech positions
+    - Mid-level tech positions
+    - Entry-level finance
+    - Entry-level data/analytics
+
+    Runs in background with rate limiting.
+    """
+    from scheduled_scraper import GenZJobSearcher
+
+    def run_priority():
+        searcher = GenZJobSearcher()
+        stats = searcher.run_priority_profiles()
+        # Import results to job board
+        job_api.import_from_aggregator()
+        return stats
+
+    background_tasks.add_task(run_priority)
+
+    return {
+        "status": "started",
+        "profiles": ["entry_tech", "mid_tech", "entry_finance", "entry_data"],
+        "message": "Priority Gen-Z searches started in background."
+    }
+
 # Background task
 async def import_to_job_board():
     """Background task to import scraped jobs"""
