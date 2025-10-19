@@ -490,11 +490,12 @@ async def shutdown_event():
 
 if __name__ == "__main__":
     import os
-    port = int(os.getenv("API_PORT", "8001"))  # Use port 8001 to avoid conflicts
+    # Railway uses PORT, local uses API_PORT
+    port = int(os.getenv("PORT", os.getenv("API_PORT", "8001")))
     uvicorn.run(
         "job_server:app",
         host="0.0.0.0",
         port=port,
-        reload=True,  # Auto-reload on code changes (disable in production)
+        reload=False,  # Disable reload in production
         log_level="info"
     )
