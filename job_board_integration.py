@@ -74,7 +74,10 @@ class JobListing(Base):
 class JobBoardDatabase:
     """Lightweight database manager for job board"""
 
-    def __init__(self, database_url='sqlite:///job_board.db'):
+    def __init__(self, database_url=None):
+        import os
+        if database_url is None:
+            database_url = os.getenv('DATABASE_URL', 'sqlite:///job_board.db')
         self.engine = create_engine(database_url)
         Base.metadata.create_all(self.engine)
         Session = sessionmaker(bind=self.engine)
@@ -292,7 +295,10 @@ class JobBoardAPI:
     Combines lightweight database with on-demand fetching
     """
 
-    def __init__(self, database_url='sqlite:///job_board.db'):
+    def __init__(self, database_url=None):
+        import os
+        if database_url is None:
+            database_url = os.getenv('DATABASE_URL', 'sqlite:///job_board.db')
         self.db = JobBoardDatabase(database_url)
         self.fetcher = DetailFetcher()
 
