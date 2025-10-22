@@ -5,13 +5,49 @@ Lightweight database with essential fields only + on-demand detail fetching
 
 from sqlalchemy import create_engine, Column, Integer, String, DateTime, Boolean, Float
 from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy.exc import OperationalError, DBAPIError
 from datetime import datetime
 import hashlib
 import requests
 from bs4 import BeautifulSoup
 import json
+import time
+from functools import wraps
 
 Base = declarative_base()
+
+
+def retry_on_db_error(max_retries=3, delay=0.5):
+    """Decorator to retry database operations on connection errors"""
+    def decorator(func):
+        @wraps(func)
+        def wrapper(self, *args, **kwargs):
+            last_exception = None
+            for attempt in range(max_retries):
+                try:
+                    return func(self, *args, **kwargs)
+                except (OperationalError, DBAPIError) as e:
+                    last_exception = e
+                    error_msg = str(e).lower()
+                    # Only retry on connection/SSL errors, not other DB errors
+                    if 'ssl' in error_msg or 'connection' in error_msg or 'closed' in error_msg:
+                        if attempt < max_retries - 1:
+                            # Rollback and refresh session
+                            try:
+                                self.session.rollback()
+                                self.session.close()
+                                # Create new session
+                                Session = sessionmaker(bind=self.engine)
+                                self.session = Session()
+                            except:
+                                pass
+                            time.sleep(delay * (attempt + 1))  # Exponential backoff
+                            continue
+                    # If not a connection error, or max retries reached, raise
+                    raise
+            raise last_exception
+        return wrapper
+    return decorator
 
 
 class JobListing(Base):
@@ -136,6 +172,7 @@ class JobBoardDatabase:
         self.session.commit()
         return True, job
 
+    @retry_on_db_error(max_retries=3, delay=0.5)
     def get_jobs(self, filters=None, limit=50, offset=0):
         """Get jobs for listing page"""
         query = self.session.query(JobListing)
@@ -158,6 +195,7 @@ class JobBoardDatabase:
 
         return query.order_by(JobListing.posted_date.desc()).offset(offset).limit(limit).all()
 
+    @retry_on_db_error(max_retries=3, delay=0.5)
     def get_job_by_id(self, job_id):
         """Get single job by ID"""
         return self.session.query(JobListing).filter_by(id=job_id).first()
@@ -178,6 +216,7 @@ class JobBoardDatabase:
             job.cache_date = datetime.utcnow()
             self.session.commit()
 
+    @retry_on_db_error(max_retries=3, delay=0.5)
     def get_total_count(self, filters=None):
         """Get total job count for pagination"""
         query = self.session.query(JobListing)
@@ -424,6 +463,7 @@ class JobBoardAPI:
         details['view_count'] = job.view_count
         return details
 
+    @retry_on_db_error(max_retries=3, delay=0.5)
     def get_statistics(self):
         """Get database statistics"""
         from sqlalchemy import func
