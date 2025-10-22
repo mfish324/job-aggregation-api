@@ -36,7 +36,21 @@ class Job(Base):
 
 class DatabaseManager:
     def __init__(self, database_url='sqlite:///jobs.db'):
-        self.engine = create_engine(database_url)
+        # Add connection pooling and health checks for PostgreSQL
+        engine_kwargs = {}
+        if database_url.startswith('postgresql'):
+            engine_kwargs.update({
+                'pool_pre_ping': True,  # Verify connections before using
+                'pool_recycle': 3600,   # Recycle connections after 1 hour
+                'pool_size': 5,         # Max 5 connections in pool
+                'max_overflow': 10,     # Allow up to 10 overflow connections
+                'connect_args': {
+                    'connect_timeout': 10,
+                    'options': '-c statement_timeout=30000'  # 30 second query timeout
+                }
+            })
+
+        self.engine = create_engine(database_url, **engine_kwargs)
         Base.metadata.create_all(self.engine)
         Session = sessionmaker(bind=self.engine)
         self.session = Session()
