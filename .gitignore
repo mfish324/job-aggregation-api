@@ -48,3 +48,11 @@ data/
 .pytest_cache/
 .coverage
 htmlcov/
+
+# Temporary files
+temp.txt
+temp_*.txt
+*.tmp
+
+# HTML documentation (generated from markdown)
+*.html
