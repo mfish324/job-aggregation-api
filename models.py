@@ -45,8 +45,7 @@ class DatabaseManager:
                 'pool_size': 5,         # Max 5 connections in pool
                 'max_overflow': 10,     # Allow up to 10 overflow connections
                 'connect_args': {
-                    'connect_timeout': 10,
-                    'options': '-c statement_timeout=30000'  # 30 second query timeout
+                    'connect_timeout': 10
                 }
             })
 
