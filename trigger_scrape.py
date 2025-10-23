@@ -17,6 +17,13 @@ import time
 import os
 from dotenv import load_dotenv
 
+# Fix Windows console encoding for emojis
+if sys.platform == 'win32':
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+    except:
+        pass
+
 load_dotenv()
 
 def trigger_scrape(base_url, sources=None, keywords=None):
