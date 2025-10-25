@@ -312,6 +312,14 @@ async def get_sources():
                 "type": "api",
                 "requires_key": True,
                 "active": bool(os.getenv('RAPIDAPI_KEY'))
+            },
+            {
+                "id": "usajobs",
+                "name": "USAJOBS (Federal Government)",
+                "type": "api",
+                "requires_key": True,
+                "active": bool(os.getenv('USAJOBS_API_KEY')),
+                "description": "Official federal government jobs (DOD, NASA, FBI, etc.) - 20,000+ entry-level positions"
             }
         ],
         "company_careers": [

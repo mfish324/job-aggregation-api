@@ -9,6 +9,7 @@ from company_scrapers import (
     GoogleCareersScraper, AmazonCareersScraper, AppleCareersScraper,
     MicrosoftCareersScraper, MetaCareersScraper, TeslaCareersScraper
 )
+from usajobs_scraper import USAJobsScraper
 from models import DatabaseManager
 from location_filter import is_us_location, filter_us_jobs
 from typing import List, Dict
@@ -59,6 +60,14 @@ class JobAggregator:
             self.scrapers['github'] = GitHubJobsScraper(github_token)
         else:
             self.scrapers['github'] = GitHubJobsScraper()
+
+        # Add USAJOBS scraper if API key available
+        usajobs_key = os.getenv('USAJOBS_API_KEY')
+        if usajobs_key:
+            self.scrapers['usajobs'] = USAJobsScraper(
+                api_key=usajobs_key,
+                user_agent=os.getenv('USAJOBS_USER_AGENT', 'LevelUpCareers/1.0 (contact@levelupcareers.com)')
+            )
 
     def scrape_all(self, keywords=None, location=None, sources=None, max_pages=5):
         """

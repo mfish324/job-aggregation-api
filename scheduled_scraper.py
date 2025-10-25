@@ -152,12 +152,17 @@ class GenZJobSearcher:
         'weworkremotely': {
             'requests_per_hour': 30,
             'delay_seconds': 120
+        },
+        'usajobs': {
+            'requests_per_hour': 10,  # Official API limit: 10 per minute
+            'delay_seconds': 6  # 6 seconds between requests
         }
     }
 
     def __init__(self, database_url='sqlite:///job_board.db', us_only=True):
         self.aggregator = JobAggregator(database_url=database_url, us_only=us_only)
         self.indeed_scraper = None
+        self.usajobs_scraper = None
         self.us_only = us_only
 
         # Initialize Indeed scraper if API key available
@@ -168,6 +173,15 @@ class GenZJobSearcher:
                 api_host=os.getenv('RAPIDAPI_INDEED_HOST', 'indeed-jobs-api.p.rapidapi.com')
             )
 
+        # Initialize USAJOBS scraper if API key available
+        usajobs_key = os.getenv('USAJOBS_API_KEY')
+        if usajobs_key:
+            from usajobs_scraper import USAJobsScraper
+            self.usajobs_scraper = USAJobsScraper(
+                api_key=usajobs_key,
+                user_agent=os.getenv('USAJOBS_USER_AGENT', 'LevelUpCareers/1.0 (contact@levelupcareers.com)')
+            )
+
         self.search_stats = {
             'total_searches': 0,
             'total_jobs_found': 0,
@@ -176,6 +190,8 @@ class GenZJobSearcher:
         }
 
         print(f"Gen-Z Job Searcher initialized (US only: {us_only})")
+        if self.usajobs_scraper:
+            print("✅ USAJOBS scraper enabled (20,000+ federal jobs)")
 
     def search_with_rate_limit(self, source: str, keyword: str, category: str = None):
         """
@@ -195,7 +211,26 @@ class GenZJobSearcher:
         logger.info(f"Searching {source} for '{keyword}' (rate limit: {delay}s)")
 
         try:
-            if source == 'indeed_rapidapi' and self.indeed_scraper:
+            if source == 'usajobs' and self.usajobs_scraper:
+                # USAJOBS: Federal government jobs (all are US-based)
+                results = self.usajobs_scraper.search_by_keyword(
+                    keyword=keyword,
+                    max_results=50,
+                    posted_within_days=30
+                )
+
+                # Add to database
+                new_count = 0
+                for job in results:
+                    is_new, _ = self.aggregator.db.add_job(job)
+                    if is_new:
+                        new_count += 1
+
+                logger.info(f"USAJOBS: Found {len(results)} jobs, {new_count} new")
+                time.sleep(delay)
+                return new_count, len(results)
+
+            elif source == 'indeed_rapidapi' and self.indeed_scraper:
                 results = self.indeed_scraper.scrape(
                     keyword=keyword,
                     location='United States',  # Specify US for Indeed
@@ -289,6 +324,15 @@ class GenZJobSearcher:
             stats['total_jobs_found'] += total
             if 'remotive' not in stats['sources_used']:
                 stats['sources_used'].append('remotive')
+
+            # USAJOBS (if available) - Excellent for all entry-level positions
+            # Federal government jobs with great benefits
+            if self.usajobs_scraper and profile_name in ['entry_tech', 'entry_finance', 'entry_data', 'mid_tech', 'mid_finance']:
+                new, total = self.search_with_rate_limit('usajobs', keyword)
+                stats['new_jobs_added'] += new
+                stats['total_jobs_found'] += total
+                if 'usajobs' not in stats['sources_used']:
+                    stats['sources_used'].append('usajobs')
 
             # Indeed (if available) - Best for finance, entry-level
             if self.indeed_scraper and profile_name in ['entry_finance', 'mid_finance', 'entry_marketing']:
