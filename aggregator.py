@@ -5,6 +5,10 @@ from scrapers import (
     RemotiveScraper, AuthenticJobsScraper, GitHubJobsScraper,
     IndeedScraper, AngelListScraper, CrunchboardScraper
 )
+from company_scrapers import (
+    GoogleCareersScraper, AmazonCareersScraper, AppleCareersScraper,
+    MicrosoftCareersScraper, MetaCareersScraper, TeslaCareersScraper
+)
 from models import DatabaseManager
 from location_filter import is_us_location, filter_us_jobs
 from typing import List, Dict
@@ -21,7 +25,7 @@ class JobAggregator:
         self.db = DatabaseManager(self.database_url)
         self.us_only = us_only  # Filter for US jobs only
 
-        # Initialize scrapers
+        # Initialize standard job board scrapers
         self.scrapers = {
             'remoteok': RemoteOKScraper(),
             'remotive': RemotiveScraper(),
@@ -30,6 +34,19 @@ class JobAggregator:
             'indeed': IndeedScraper(),
             'crunchboard': CrunchboardScraper(),
         }
+
+        # Initialize enterprise company scrapers
+        self.company_scrapers = {
+            'google': GoogleCareersScraper(),
+            'amazon': AmazonCareersScraper(),
+            'apple': AppleCareersScraper(),
+            'microsoft': MicrosoftCareersScraper(),
+            'meta': MetaCareersScraper(),
+            'tesla': TeslaCareersScraper(),
+        }
+
+        # Combine all scrapers
+        self.scrapers.update(self.company_scrapers)
 
         # Add API-based scrapers if credentials are available
         adzuna_id = os.getenv('ADZUNA_APP_ID')

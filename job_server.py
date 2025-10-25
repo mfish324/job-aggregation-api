@@ -267,10 +267,10 @@ async def get_statistics():
 @app.get("/sources")
 async def get_sources():
     """
-    Get list of available job sources
+    Get list of available job sources including major tech companies
     """
     return {
-        "sources": [
+        "job_boards": [
             {
                 "id": "remoteok",
                 "name": "RemoteOK",
@@ -312,6 +312,56 @@ async def get_sources():
                 "type": "api",
                 "requires_key": True,
                 "active": bool(os.getenv('RAPIDAPI_KEY'))
+            }
+        ],
+        "company_careers": [
+            {
+                "id": "google",
+                "name": "Google Careers",
+                "type": "xml_feed",
+                "requires_key": False,
+                "active": True,
+                "description": "Official Google job listings (all teams)"
+            },
+            {
+                "id": "amazon",
+                "name": "Amazon Jobs",
+                "type": "api",
+                "requires_key": False,
+                "active": True,
+                "description": "Amazon and AWS positions"
+            },
+            {
+                "id": "apple",
+                "name": "Apple Careers",
+                "type": "api",
+                "requires_key": False,
+                "active": True,
+                "description": "Apple job opportunities"
+            },
+            {
+                "id": "microsoft",
+                "name": "Microsoft Careers",
+                "type": "api",
+                "requires_key": False,
+                "active": True,
+                "description": "Microsoft and Azure positions"
+            },
+            {
+                "id": "meta",
+                "name": "Meta Careers",
+                "type": "scraper",
+                "requires_key": False,
+                "active": True,
+                "description": "Facebook, Instagram, WhatsApp jobs"
+            },
+            {
+                "id": "tesla",
+                "name": "Tesla Careers",
+                "type": "api",
+                "requires_key": False,
+                "active": True,
+                "description": "Tesla and SpaceX opportunities"
             }
         ]
     }
