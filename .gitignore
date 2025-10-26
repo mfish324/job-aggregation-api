@@ -37,6 +37,8 @@ Thumbs.db
 # Test files
 test_*.db
 temp_*.db
+test_*.py
+debug_*.py
 
 # Data directory (databases stored here)
 data/
@@ -53,6 +55,8 @@ htmlcov/
 temp.txt
 temp_*.txt
 *.tmp
+*.csv
+*.bat
 
 # HTML documentation (generated from markdown)
 *.html

@@ -87,11 +87,13 @@ class GoogleCareersScraper(BaseScraper):
                     # Filter by keywords if provided
                     if keywords:
                         kw_lower = keywords.lower()
-                        if kw_lower not in title.lower() and kw_lower not in description.lower():
+                        title_safe = title.lower() if title else ''
+                        desc_safe = description.lower() if description else ''
+                        if kw_lower not in title_safe and kw_lower not in desc_safe:
                             continue
 
                     # Filter by location if provided
-                    if location and location.lower() not in location_str.lower():
+                    if location and location_str and location.lower() not in location_str.lower():
                         continue
 
                     # Clean HTML from description
