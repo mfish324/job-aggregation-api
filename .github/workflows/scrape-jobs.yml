@@ -1,0 +1,56 @@
+name: Scrape Jobs Every 6 Hours
+
+on:
+  schedule:
+    # Run every 6 hours at: 00:00, 06:00, 12:00, 18:00 UTC
+    - cron: '0 */6 * * *'
+
+  workflow_dispatch:  # Allow manual trigger from GitHub Actions tab
+    inputs:
+      profile:
+        description: 'Profile to scrape (or "all" for priority)'
+        required: false
+        default: 'all'
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30  # Prevent hanging
+
+    steps:
+      - name: Trigger Job Scraping
+        run: |
+          echo "Triggering job scraping on Railway..."
+
+          if [ "${{ github.event.inputs.profile }}" == "all" ] || [ -z "${{ github.event.inputs.profile }}" ]; then
+            # Trigger priority profiles (entry_tech, entry_finance, entry_data)
+            curl -X POST "${{ secrets.RAILWAY_APP_URL }}/genz/search-priority" \
+              -H "Content-Type: application/json" \
+              -w "\nHTTP Status: %{http_code}\n" \
+              -s
+          else
+            # Trigger specific profile
+            curl -X POST "${{ secrets.RAILWAY_APP_URL }}/genz/search/${{ github.event.inputs.profile }}" \
+              -H "Content-Type: application/json" \
+              -w "\nHTTP Status: %{http_code}\n" \
+              -s
+          fi
+
+      - name: Wait for scraping to complete
+        run: |
+          echo "Waiting 3 minutes for scraping to complete..."
+          sleep 180
+
+      - name: Check results
+        run: |
+          echo "Fetching statistics..."
+          curl "${{ secrets.RAILWAY_APP_URL }}/stats" \
+            -H "Accept: application/json" \
+            -s | jq '.'
+
+      - name: Verify sources
+        run: |
+          echo "Checking active sources..."
+          curl "${{ secrets.RAILWAY_APP_URL }}/sources" \
+            -H "Accept: application/json" \
+            -s | jq '.job_boards[] | select(.active == true) | {id: .id, name: .name}'
