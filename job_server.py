@@ -27,7 +27,16 @@ from pydantic import BaseModel
 from datetime import datetime
 import uvicorn
 
-from job_board_integration import JobBoardAPI
+# REVERTED: Use old models.py instead of job_board_integration.py
+# Reason: Railway database has 'jobs' table, not 'job_listings' table
+from models import DatabaseManager
+
+# Wrapper class for compatibility
+class JobBoardAPI:
+    def __init__(self):
+        import os
+        database_url = os.getenv('DATABASE_URL', 'sqlite:///jobs.db')
+        self.db = DatabaseManager(database_url)
 from aggregator import JobAggregator
 import os
 
