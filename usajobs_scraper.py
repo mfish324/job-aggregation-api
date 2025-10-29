@@ -416,24 +416,31 @@ class USAJobsScraper:
 
     def scrape(
         self,
+        keywords: Optional[str] = None,
         keyword: Optional[str] = None,
         location: Optional[str] = None,
-        max_results: int = 100
+        max_results: int = 100,
+        max_pages: int = 5  # Added for compatibility, not used by API
     ) -> List[Dict]:
         """
         Main scraping method compatible with JobAggregator interface
 
         Args:
-            keyword: Search keyword
+            keywords: Search keyword (accepts plural form for compatibility)
+            keyword: Search keyword (singular form)
             location: Location filter
             max_results: Maximum results to return
+            max_pages: For compatibility with other scrapers (not used)
 
         Returns:
             List of standardized job dictionaries
         """
-        if keyword:
+        # Handle both keywords and keyword parameters
+        search_term = keywords or keyword
+
+        if search_term:
             return self.search_by_keyword(
-                keyword=keyword,
+                keyword=search_term,
                 location=location,
                 max_results=max_results
             )
