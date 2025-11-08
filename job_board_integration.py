@@ -355,9 +355,14 @@ class JobBoardAPI:
         self.db = JobBoardDatabase(database_url)
         self.fetcher = DetailFetcher()
 
-    def import_from_aggregator(self, aggregator_db_path='sqlite:///jobs.db'):
+    def import_from_aggregator(self, aggregator_db_path=None):
         """Import jobs from the main aggregator database"""
         from aggregator import JobAggregator
+        import os
+
+        # Use DATABASE_URL if no path specified (for Railway/production)
+        if aggregator_db_path is None:
+            aggregator_db_path = os.getenv('DATABASE_URL', 'sqlite:///jobs.db')
 
         aggregator = JobAggregator(database_url=aggregator_db_path)
         jobs = aggregator.db.get_jobs(limit=10000)
