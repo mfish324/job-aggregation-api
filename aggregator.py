@@ -10,6 +10,7 @@ from company_scrapers import (
     MicrosoftCareersScraper, MetaCareersScraper, TeslaCareersScraper
 )
 from usajobs_scraper import USAJobsScraper
+from jobspy_scraper import JobSpyScraper
 from models import DatabaseManager
 from location_filter import is_us_location, filter_us_jobs
 from typing import List, Dict
@@ -68,6 +69,10 @@ class JobAggregator:
                 api_key=usajobs_key,
                 user_agent=os.getenv('USAJOBS_USER_AGENT', 'LevelUpCareers/1.0 (contact@levelupcareers.com)')
             )
+
+        # Add JobSpy multi-platform scraper (Indeed, LinkedIn, Glassdoor, Google)
+        # This gives us access to 4 major platforms through one scraper
+        self.scrapers['jobspy'] = JobSpyScraper()
 
     def scrape_all(self, keywords=None, location=None, sources=None, max_pages=5):
         """
