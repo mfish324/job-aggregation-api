@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from scrapers import (
     AdzunaScraper, RemoteOKScraper, WeWorkRemotelyScraper,
     RemotiveScraper, AuthenticJobsScraper, GitHubJobsScraper,
-    AngelListScraper, CrunchboardScraper
+    AngelListScraper, CrunchboardScraper, BebeeScraper
 )
 from company_scrapers import (
     GoogleCareersScraper, AmazonCareersScraper, AppleCareersScraper,
@@ -35,6 +35,7 @@ class JobAggregator:
             'weworkremotely': WeWorkRemotelyScraper(),
             'authenticjobs': AuthenticJobsScraper(),
             'crunchboard': CrunchboardScraper(),
+            'bebee': BebeeScraper(),
         }
 
         # Initialize enterprise company scrapers

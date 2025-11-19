@@ -486,3 +486,80 @@ class CrunchboardScraper(BaseScraper):
             print(f"Error scraping Crunchboard: {e}")
 
         return jobs
+
+
+class BebeeScraper(BaseScraper):
+    """
+    Bebee - Professional networking and job board
+    Source: https://www.bebee.com/
+    """
+
+    def scrape(self, keywords=None, location=None, max_pages=5):
+        """Scrape jobs from Bebee"""
+        jobs = []
+
+        if not keywords:
+            keywords = "software developer"
+        if not location:
+            location = "United States"
+
+        # Bebee job search API endpoint
+        base_url = "https://www.bebee.com/api/job/search"
+
+        try:
+            for page in range(max_pages):
+                params = {
+                    'q': keywords,
+                    'location': location,
+                    'page': page + 1,
+                    'size': 20
+                }
+
+                response = self.session.get(base_url, params=params, timeout=self.timeout)
+
+                if response.status_code != 200:
+                    print(f"Bebee returned status {response.status_code}")
+                    break
+
+                data = response.json()
+                results = data.get('results', [])
+
+                if not results:
+                    break
+
+                for job in results:
+                    try:
+                        title = job.get('title', 'N/A')
+                        company = job.get('company', {}).get('name', 'N/A')
+                        location_str = job.get('location', {}).get('name', 'N/A')
+                        description = job.get('description', '')
+                        job_url = job.get('url', f"https://www.bebee.com/job/{job.get('id', '')}")
+                        posted_date = job.get('publishedDate', '')
+                        job_type = job.get('type', 'Full-time')
+
+                        jobs.append({
+                            'title': title,
+                            'company': company,
+                            'location': location_str,
+                            'description': description[:500] if description else '',
+                            'url': job_url,
+                            'source': 'bebee',
+                            'posted_date': self.normalize_date(posted_date),
+                            'job_type': job_type,
+                            'salary': None,
+                            'tags': json.dumps(['bebee']),
+                            'remote': 'remote' in title.lower() or 'remote' in location_str.lower()
+                        })
+
+                    except Exception as e:
+                        print(f"Error parsing Bebee job: {e}")
+                        continue
+
+                time.sleep(1)  # Rate limiting
+
+            print(f"✓ Bebee: Found {len(jobs)} jobs")
+
+        except Exception as e:
+            print(f"✗ Error scraping Bebee: {e}")
+
+        return jobs
