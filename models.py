@@ -27,7 +27,10 @@ class Job(Base):
     @staticmethod
     def generate_job_id(title, company, location):
         """Generate unique job ID based on title, company, and location"""
-        key = f"{title.lower().strip()}|{company.lower().strip()}|{location.lower().strip()}"
+        title_safe = title.lower().strip() if title else ''
+        company_safe = company.lower().strip() if company else ''
+        location_safe = location.lower().strip() if location else ''
+        key = f"{title_safe}|{company_safe}|{location_safe}"
         return hashlib.md5(key.encode()).hexdigest()
 
     def __repr__(self):
