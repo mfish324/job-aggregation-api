@@ -85,7 +85,7 @@ class GoogleCareersScraper(BaseScraper):
                             location_str = f"{city}, {state}" if city and state else country
 
                     # Filter by keywords if provided
-                    if keywords:
+                    if keywords and isinstance(keywords, str):
                         kw_lower = keywords.lower()
                         title_safe = title.lower() if title else ''
                         desc_safe = description.lower() if description else ''
@@ -93,8 +93,9 @@ class GoogleCareersScraper(BaseScraper):
                             continue
 
                     # Filter by location if provided
-                    if location and location_str and location.lower() not in location_str.lower():
-                        continue
+                    if location and isinstance(location, str) and location_str:
+                        if location.lower() not in location_str.lower():
+                            continue
 
                     # Clean HTML from description
                     clean_desc = BeautifulSoup(description, 'html.parser').get_text()[:500] if description else ''
