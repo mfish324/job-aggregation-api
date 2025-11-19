@@ -248,7 +248,7 @@ class USAJobsScraper:
             'location': location_str,
             'salary': salary,
             'source': 'usajobs',
-            'source_url': details_url or apply_url,
+            'url': details_url or apply_url,
             'posted_date': posted_str,
             'remote': telework,
             'job_type': work_schedule,
@@ -499,7 +499,7 @@ if __name__ == "__main__":
         print(f"  Location: {job['location']}")
         print(f"  Salary: {job['salary']}")
         print(f"  Posted: {job['posted_date']}")
-        print(f"  URL: {job['source_url']}")
+        print(f"  URL: {job['url']}")
         print(f"  Remote: {job['remote']}")
 
     # Test 2: Recent graduate programs
