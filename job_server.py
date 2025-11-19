@@ -56,7 +56,7 @@ class JobResponse(BaseModel):
     job_id: str
     title: str
     company: str
-    location: str
+    location: Optional[str]  # Allow null locations
     salary: Optional[str]
     source: str
     source_url: str
