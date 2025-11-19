@@ -69,8 +69,12 @@ class DatabaseManager:
         if existing:
             return False, existing
 
-        # Remove job_id from job_data if present (to avoid conflict)
-        clean_job_data = {k: v for k, v in job_data.items() if k != 'job_id'}
+        # Valid Job model fields (excluding job_id which is set separately)
+        valid_fields = {'title', 'company', 'location', 'description', 'url',
+                       'source', 'posted_date', 'job_type', 'salary', 'tags', 'remote'}
+
+        # Filter job_data to only include valid fields
+        clean_job_data = {k: v for k, v in job_data.items() if k in valid_fields}
 
         job = Job(job_id=job_id, **clean_job_data)
         self.session.add(job)
