@@ -83,8 +83,8 @@ def is_us_location(location_str: str) -> bool:
     Returns:
         True if location is US-based, False otherwise
     """
-    if not location_str:
-        # Empty location - could be remote, allow it
+    if not location_str or not isinstance(location_str, str):
+        # Empty location or non-string - could be remote, allow it
         return True
 
     location_lower = location_str.lower().strip()
