@@ -46,6 +46,9 @@ class GoogleCareersScraper(BaseScraper):
         jobs = []
         url = "https://www.google.com/about/careers/applications/jobs/feed.xml"
 
+        # Debug: Log input parameters
+        print(f"Google scraper called with keywords={keywords!r} (type={type(keywords)}), location={location!r} (type={type(location)})")
+
         try:
             response = self.session.get(url, timeout=60)  # Longer timeout, large feed
             response.raise_for_status()
@@ -117,13 +120,17 @@ class GoogleCareersScraper(BaseScraper):
                     count += 1
 
                 except Exception as e:
+                    import traceback
                     print(f"Error parsing Google job entry: {e}")
+                    print(f"Full traceback: {traceback.format_exc()}")
                     continue
 
             print(f"✓ Google: Found {len(jobs)} jobs")
 
         except Exception as e:
+            import traceback
             print(f"✗ Error scraping Google careers: {e}")
+            print(f"Full traceback: {traceback.format_exc()}")
 
         return jobs
 
