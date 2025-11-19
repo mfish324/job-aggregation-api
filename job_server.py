@@ -25,17 +25,39 @@ from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional, List
 from pydantic import BaseModel
 from datetime import datetime
+from contextlib import asynccontextmanager
 import uvicorn
 
 from job_board_integration import JobBoardAPI
 from aggregator import JobAggregator
 import os
 
-# Initialize FastAPI
+# Lifespan context manager for startup/shutdown events
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    print("="*80)
+    print("JOB AGGREGATION API SERVER")
+    print("="*80)
+    print(f"Server starting...")
+    job_api = JobBoardAPI()
+    print(f"Total jobs in database: {job_api.get_total_count()}")
+    print(f"\nAPI Documentation: http://localhost:8000/docs")
+    print(f"Interactive API: http://localhost:8000/redoc")
+    print("="*80)
+
+    yield
+
+    # Shutdown
+    job_api.close()
+    print("Server shutdown complete")
+
+# Initialize FastAPI with lifespan
 app = FastAPI(
     title="Job Aggregation API",
     description="REST API for aggregating and serving job listings from multiple sources",
-    version="1.0.0"
+    version="1.0.0",
+    lifespan=lifespan
 )
 
 # Enable CORS for web apps
@@ -521,26 +543,8 @@ async def import_to_job_board():
         print(f"Background import error: {e}")
 
 # =============================================================================
-# STARTUP/SHUTDOWN
+# STARTUP/SHUTDOWN - Now handled by lifespan context manager above
 # =============================================================================
-
-@app.on_event("startup")
-async def startup_event():
-    """Initialize on startup"""
-    print("="*80)
-    print("JOB AGGREGATION API SERVER")
-    print("="*80)
-    print(f"Server starting...")
-    print(f"Total jobs in database: {job_api.db.get_total_count()}")
-    print(f"\nAPI Documentation: http://localhost:8000/docs")
-    print(f"Interactive API: http://localhost:8000/redoc")
-    print("="*80)
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    """Cleanup on shutdown"""
-    job_api.close()
-    print("Server shutdown complete")
 
 # =============================================================================
 # RUN SERVER
