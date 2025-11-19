@@ -110,7 +110,7 @@ class GoogleCareersScraper(BaseScraper):
                         'job_type': 'Full-time' if job_type == 'FULL_TIME' else job_type,
                         'salary': None,  # Google doesn't include salary in feed
                         'tags': json.dumps(['tech', 'google', 'faang']),
-                        'remote': is_remote.lower() == 'yes'
+                        'remote': is_remote.lower() == 'yes' if is_remote else False
                     })
 
                     count += 1
