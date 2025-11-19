@@ -69,7 +69,10 @@ class DatabaseManager:
         if existing:
             return False, existing
 
-        job = Job(job_id=job_id, **job_data)
+        # Remove job_id from job_data if present (to avoid conflict)
+        clean_job_data = {k: v for k, v in job_data.items() if k != 'job_id'}
+
+        job = Job(job_id=job_id, **clean_job_data)
         self.session.add(job)
         self.session.commit()
         return True, job
