@@ -3,12 +3,13 @@ from dotenv import load_dotenv
 from scrapers import (
     AdzunaScraper, RemoteOKScraper, WeWorkRemotelyScraper,
     RemotiveScraper, AuthenticJobsScraper, GitHubJobsScraper,
-    IndeedScraper, AngelListScraper, CrunchboardScraper
+    AngelListScraper, CrunchboardScraper
 )
 from company_scrapers import (
     GoogleCareersScraper, AmazonCareersScraper, AppleCareersScraper,
     MicrosoftCareersScraper, MetaCareersScraper, TeslaCareersScraper
 )
+from indeed_rapidapi_scraper import IndeedRapidAPIScraper
 from usajobs_scraper import USAJobsScraper
 from jobspy_scraper import JobSpyScraper
 from models import DatabaseManager
@@ -33,7 +34,6 @@ class JobAggregator:
             'remotive': RemotiveScraper(),
             'weworkremotely': WeWorkRemotelyScraper(),
             'authenticjobs': AuthenticJobsScraper(),
-            'indeed': IndeedScraper(),
             'crunchboard': CrunchboardScraper(),
         }
 
@@ -61,6 +61,15 @@ class JobAggregator:
             self.scrapers['github'] = GitHubJobsScraper(github_token)
         else:
             self.scrapers['github'] = GitHubJobsScraper()
+
+        # Add Indeed RapidAPI scraper if API key available
+        rapidapi_key = os.getenv('RAPIDAPI_KEY')
+        rapidapi_host = os.getenv('RAPIDAPI_INDEED_HOST', 'indeed-jobs-api.p.rapidapi.com')
+        if rapidapi_key:
+            self.scrapers['indeed'] = IndeedRapidAPIScraper(
+                api_key=rapidapi_key,
+                api_host=rapidapi_host
+            )
 
         # Add USAJOBS scraper if API key available
         usajobs_key = os.getenv('USAJOBS_API_KEY')
