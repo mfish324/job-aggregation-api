@@ -40,8 +40,11 @@ async def lifespan(app: FastAPI):
     print("JOB AGGREGATION API SERVER")
     print("="*80)
     print(f"Server starting...")
-    job_api = JobBoardAPI()
-    print(f"Total jobs in database: {job_api.db.get_total_count()}")
+    try:
+        total = job_api.db.get_total_count()
+        print(f"Total jobs in database: {total}")
+    except:
+        print("Database initializing...")
     print(f"\nAPI Documentation: http://localhost:8000/docs")
     print(f"Interactive API: http://localhost:8000/redoc")
     print("="*80)
