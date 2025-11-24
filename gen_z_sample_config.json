@@ -1,0 +1,71 @@
+{
+  "companies": [
+    {
+      "name": "Microsoft",
+      "website": "https://microsoft.com",
+      "careers_url": "https://microsoft.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Google/Alphabet",
+      "website": "https://google.com",
+      "careers_url": "https://google.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Apple",
+      "website": "https://apple.com",
+      "careers_url": "https://apple.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Amazon",
+      "website": "https://amazon.com",
+      "careers_url": "https://amazon.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Meta",
+      "website": "https://meta.com",
+      "careers_url": "https://meta.com/careers",
+      "platform": "workday"
+    },
+    {
+      "name": "IBM",
+      "website": "https://ibm.com",
+      "careers_url": "https://ibm.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Oracle",
+      "website": "https://oracle.com",
+      "careers_url": "https://oracle.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Salesforce",
+      "website": "https://salesforce.com",
+      "careers_url": "https://salesforce.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Adobe",
+      "website": "https://adobe.com",
+      "careers_url": "https://adobe.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Cisco",
+      "website": "https://cisco.com",
+      "careers_url": "https://cisco.com/careers",
+      "platform": "custom"
+    }
+  ],
+  "summary": {
+    "total": 10,
+    "by_platform": {
+      "custom": 9,
+      "workday": 1
+    }
+  }
+}

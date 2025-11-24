@@ -3,7 +3,7 @@ Job Board Integration
 Lightweight database with essential fields only + on-demand detail fetching
 """
 
-from sqlalchemy import create_engine, Column, Integer, String, DateTime, Boolean, Float
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, Boolean, Float, Text
 from sqlalchemy.orm import declarative_base, sessionmaker
 from sqlalchemy.exc import OperationalError, DBAPIError
 from datetime import datetime
@@ -73,6 +73,10 @@ class JobListing(Base):
     # Quick preview (short excerpt)
     preview_text = Column(String(500))  # First 500 chars of description
 
+    # Enhanced fields for LevelUp Careers
+    company_website = Column(String(500))  # Company website URL
+    tags = Column(Text)  # JSON array of skills/tags
+
     # Tracking
     created_at = Column(DateTime, default=datetime.utcnow, index=True)
     last_accessed = Column(DateTime)  # Track when user viewed
@@ -106,6 +110,8 @@ class JobListing(Base):
             'remote': self.remote,
             'job_type': self.job_type,
             'preview_text': self.preview_text,
+            'company_website': self.company_website,
+            'tags': self.tags,
             'created_at': self.created_at.isoformat() if self.created_at else None
         }
 
@@ -168,7 +174,9 @@ class JobBoardDatabase:
             posted_date=job_data.get('posted_date'),
             remote=job_data.get('remote', False),
             job_type=job_data.get('job_type'),
-            preview_text=job_data.get('preview_text', '')[:500]
+            preview_text=job_data.get('preview_text', '')[:500],
+            company_website=job_data.get('company_website'),
+            tags=job_data.get('tags')
         )
 
         self.session.add(job)

@@ -1,0 +1,616 @@
+{
+  "companies": [
+    {
+      "name": "Microsoft",
+      "website": "https://microsoft.com",
+      "careers_url": "https://microsoft.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Google/Alphabet",
+      "website": "https://google.com",
+      "careers_url": "https://google.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Apple",
+      "website": "https://apple.com",
+      "careers_url": "https://apple.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Amazon",
+      "website": "https://amazon.com",
+      "careers_url": "https://amazon.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Meta",
+      "website": "https://meta.com",
+      "careers_url": "https://meta.com/careers",
+      "platform": "workday"
+    },
+    {
+      "name": "IBM",
+      "website": "https://ibm.com",
+      "careers_url": "https://ibm.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Oracle",
+      "website": "https://oracle.com",
+      "careers_url": "https://oracle.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Salesforce",
+      "website": "https://salesforce.com",
+      "careers_url": "https://salesforce.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Adobe",
+      "website": "https://adobe.com",
+      "careers_url": "https://adobe.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Cisco",
+      "website": "https://cisco.com",
+      "careers_url": "https://cisco.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Nvidia",
+      "website": "https://nvidia.com",
+      "careers_url": "https://nvidia.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Tesla",
+      "website": "https://tesla.com",
+      "careers_url": "https://tesla.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Spotify",
+      "website": "https://spotify.com",
+      "careers_url": "https://spotify.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Discord",
+      "website": "https://discord.com",
+      "careers_url": "https://discord.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "TikTok/ByteDance",
+      "website": "https://tiktok.com",
+      "careers_url": "https://tiktok.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Shopify",
+      "website": "https://shopify.com",
+      "careers_url": "https://shopify.com/careers",
+      "platform": "ashbyhq"
+    },
+    {
+      "name": "Stripe",
+      "website": "https://stripe.com",
+      "careers_url": "https://stripe.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Anthropic",
+      "website": "https://anthropic.com",
+      "careers_url": "https://anthropic.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "OpenAI",
+      "website": "https://openai.com",
+      "careers_url": "https://openai.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Palantir",
+      "website": "https://palantir.com",
+      "careers_url": "https://palantir.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "JP Morgan Chase",
+      "website": "https://jpmorganchase.com",
+      "careers_url": "https://jpmorganchase.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Goldman Sachs",
+      "website": "https://goldmansachs.com",
+      "careers_url": "https://goldmansachs.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Fidelity Investments",
+      "website": "https://fidelity.com",
+      "careers_url": "https://fidelity.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Synchrony",
+      "website": "https://synchrony.com",
+      "careers_url": "https://synchrony.com/careers",
+      "platform": "workday"
+    },
+    {
+      "name": "American Express",
+      "website": "https://americanexpress.com",
+      "careers_url": "https://americanexpress.com/careers",
+      "platform": "taleo"
+    },
+    {
+      "name": "Bank of America",
+      "website": "https://bankofamerica.com",
+      "careers_url": "https://bankofamerica.com/careers",
+      "platform": "workday"
+    },
+    {
+      "name": "Morgan Stanley",
+      "website": "https://morganstanley.com",
+      "careers_url": "https://morganstanley.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Citi",
+      "website": "https://citi.com",
+      "careers_url": "https://citi.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Capital One",
+      "website": "https://capitalone.com",
+      "careers_url": "https://capitalone.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Charles Schwab",
+      "website": "https://schwab.com",
+      "careers_url": "https://schwab.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Deloitte",
+      "website": "https://deloitte.com",
+      "careers_url": "https://deloitte.com/careers",
+      "platform": "workday"
+    },
+    {
+      "name": "PwC",
+      "website": "https://pwc.com",
+      "careers_url": "https://pwc.com/careers",
+      "platform": "workday"
+    },
+    {
+      "name": "EY",
+      "website": "https://ey.com",
+      "careers_url": "https://ey.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "KPMG",
+      "website": "https://kpmg.com",
+      "careers_url": "https://kpmg.com/careers",
+      "platform": "workday"
+    },
+    {
+      "name": "Accenture",
+      "website": "https://accenture.com",
+      "careers_url": "https://accenture.com/careers",
+      "platform": "workday"
+    },
+    {
+      "name": "McKinsey & Company",
+      "website": "https://mckinsey.com",
+      "careers_url": "https://mckinsey.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Bain & Company",
+      "website": "https://bain.com",
+      "careers_url": "https://bain.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Boston Consulting Group",
+      "website": "https://bcg.com",
+      "careers_url": "https://bcg.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Booz Allen Hamilton",
+      "website": "https://boozallen.com",
+      "careers_url": "https://boozallen.com/careers",
+      "platform": "workday"
+    },
+    {
+      "name": "Capgemini",
+      "website": "https://capgemini.com",
+      "careers_url": "https://capgemini.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Target",
+      "website": "https://target.com",
+      "careers_url": "https://target.com/careers",
+      "platform": "workday"
+    },
+    {
+      "name": "Nike",
+      "website": "https://nike.com",
+      "careers_url": "https://nike.com/careers",
+      "platform": "workday"
+    },
+    {
+      "name": "Starbucks",
+      "website": "https://starbucks.com",
+      "careers_url": "https://starbucks.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Chipotle",
+      "website": "https://chipotle.com",
+      "careers_url": "https://chipotle.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Warby Parker",
+      "website": "https://warbyparker.com",
+      "careers_url": "https://warbyparker.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Allbirds",
+      "website": "https://allbirds.com",
+      "careers_url": "https://allbirds.com/careers",
+      "platform": "greenhouse"
+    },
+    {
+      "name": "Sephora",
+      "website": "https://sephora.com",
+      "careers_url": "https://sephora.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Lululemon",
+      "website": "https://lululemon.com",
+      "careers_url": "https://lululemon.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "REI",
+      "website": "https://rei.com",
+      "careers_url": "https://rei.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Whole Foods",
+      "website": "https://wholefoodsmarket.com",
+      "careers_url": "https://wholefoodsmarket.com/careers",
+      "platform": "workday"
+    },
+    {
+      "name": "Patagonia",
+      "website": "https://patagonia.com",
+      "careers_url": "https://patagonia.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Ben & Jerry's",
+      "website": "https://benjerry.com",
+      "careers_url": "https://benjerry.com/careers",
+      "platform": "workday"
+    },
+    {
+      "name": "Seventh Generation",
+      "website": "https://seventhgeneration.com",
+      "careers_url": "https://seventhgeneration.com/careers",
+      "platform": "lever"
+    },
+    {
+      "name": "Athleta",
+      "website": "https://athleta.com",
+      "careers_url": "https://athleta.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "The Body Shop",
+      "website": "https://thebodyshop.com",
+      "careers_url": "https://thebodyshop.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "TOMS",
+      "website": "https://toms.com",
+      "careers_url": "https://toms.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Eileen Fisher",
+      "website": "https://eileenfisher.com",
+      "careers_url": "https://eileenfisher.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Bombas",
+      "website": "https://bombas.com",
+      "careers_url": "https://bombas.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Kickstarter",
+      "website": "https://kickstarter.com",
+      "careers_url": "https://kickstarter.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Lemonade",
+      "website": "https://lemonade.com",
+      "careers_url": "https://lemonade.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Johnson & Johnson",
+      "website": "https://jnj.com",
+      "careers_url": "https://jnj.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Pfizer",
+      "website": "https://pfizer.com",
+      "careers_url": "https://pfizer.com/careers",
+      "platform": "workday"
+    },
+    {
+      "name": "Moderna",
+      "website": "https://modernatx.com",
+      "careers_url": "https://modernatx.com/careers",
+      "platform": "workday"
+    },
+    {
+      "name": "UnitedHealth Group",
+      "website": "https://unitedhealthgroup.com",
+      "careers_url": "https://unitedhealthgroup.com/careers",
+      "platform": "taleo"
+    },
+    {
+      "name": "CVS Health",
+      "website": "https://cvshealth.com",
+      "careers_url": "https://cvshealth.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "St. Jude Children's Research Hospital",
+      "website": "https://stjude.org",
+      "careers_url": "https://stjude.org/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Kaiser Permanente",
+      "website": "https://kaiserpermanente.org",
+      "careers_url": "https://kaiserpermanente.org/careers",
+      "platform": "taleo"
+    },
+    {
+      "name": "Anthem",
+      "website": "https://anthem.com",
+      "careers_url": "https://anthem.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Regeneron",
+      "website": "https://regeneron.com",
+      "careers_url": "https://regeneron.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Vertex Pharmaceuticals",
+      "website": "https://vrtx.com",
+      "careers_url": "https://vrtx.com/careers",
+      "platform": "workday"
+    },
+    {
+      "name": "Disney",
+      "website": "https://disney.com",
+      "careers_url": "https://disney.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Netflix",
+      "website": "https://netflix.com",
+      "careers_url": "https://netflix.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Spotify",
+      "website": "https://spotify.com",
+      "careers_url": "https://spotify.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "The New York Times",
+      "website": "https://nytimes.com",
+      "careers_url": "https://nytimes.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Warner Bros. Discovery",
+      "website": "https://wbd.com",
+      "careers_url": "https://wbd.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "NBCUniversal",
+      "website": "https://nbcuniversal.com",
+      "careers_url": "https://nbcuniversal.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Paramount",
+      "website": "https://paramount.com",
+      "careers_url": "https://paramount.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Sony",
+      "website": "https://sony.com",
+      "careers_url": "https://sony.com/careers",
+      "platform": "greenhouse"
+    },
+    {
+      "name": "Epic Games",
+      "website": "https://epicgames.com",
+      "careers_url": "https://epicgames.com/careers",
+      "platform": "greenhouse"
+    },
+    {
+      "name": "Roblox",
+      "website": "https://roblox.com",
+      "careers_url": "https://roblox.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Hilton",
+      "website": "https://hilton.com",
+      "careers_url": "https://hilton.com/careers",
+      "platform": "taleo"
+    },
+    {
+      "name": "Marriott International",
+      "website": "https://marriott.com",
+      "careers_url": "https://marriott.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Airbnb",
+      "website": "https://airbnb.com",
+      "careers_url": "https://airbnb.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Expedia Group",
+      "website": "https://expediagroup.com",
+      "careers_url": "https://expediagroup.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Booking.com",
+      "website": "https://booking.com",
+      "careers_url": "https://booking.com/careers",
+      "platform": "icims"
+    },
+    {
+      "name": "Southwest Airlines",
+      "website": "https://southwest.com",
+      "careers_url": "https://southwest.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Delta Air Lines",
+      "website": "https://delta.com",
+      "careers_url": "https://delta.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "United Airlines",
+      "website": "https://united.com",
+      "careers_url": "https://united.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Hyatt Hotels",
+      "website": "https://hyatt.com",
+      "careers_url": "https://hyatt.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "MGM Resorts",
+      "website": "https://mgmresorts.com",
+      "careers_url": "https://mgmresorts.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "General Motors",
+      "website": "https://gm.com",
+      "careers_url": "https://gm.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Ford Motor Company",
+      "website": "https://ford.com",
+      "careers_url": "https://ford.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Rivian",
+      "website": "https://rivian.com",
+      "careers_url": "https://rivian.com/careers",
+      "platform": "icims"
+    },
+    {
+      "name": "Uber",
+      "website": "https://uber.com",
+      "careers_url": "https://uber.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Lyft",
+      "website": "https://lyft.com",
+      "careers_url": "https://lyft.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "FedEx",
+      "website": "https://fedex.com",
+      "careers_url": "https://fedex.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "UPS",
+      "website": "https://ups.com",
+      "careers_url": "https://ups.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "DoorDash",
+      "website": "https://doordash.com",
+      "careers_url": "https://doordash.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Instacart",
+      "website": "https://instacart.com",
+      "careers_url": "https://instacart.com/careers",
+      "platform": "custom"
+    },
+    {
+      "name": "Amtrak",
+      "website": "https://amtrak.com",
+      "careers_url": "https://amtrak.com/careers",
+      "platform": "custom"
+    }
+  ],
+  "summary": {
+    "total": 100,
+    "by_platform": {
+      "custom": 74,
+      "workday": 15,
+      "ashbyhq": 1,
+      "taleo": 4,
+      "greenhouse": 3,
+      "lever": 1,
+      "icims": 2
+    }
+  }
+}

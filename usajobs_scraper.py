@@ -33,6 +33,7 @@ import json
 from typing import List, Dict, Optional
 from datetime import datetime, timedelta
 import logging
+from skill_extractor import extract_skills, skills_to_json
 
 logger = logging.getLogger(__name__)
 
@@ -243,9 +244,23 @@ class USAJobsScraper:
         else:
             company = org_name
 
-        # Tags as JSON string for SQLite compatibility
-        tags_list = [grade_range, job_category] if grade_range or job_category else []
-        tags_json = json.dumps(tags_list) if tags_list else None
+        # Extract company website (USAJobs is federal government)
+        company_website = 'https://www.usajobs.gov'
+
+        # Extract technical skills from title and description
+        combined_text = f"{title} {description}"
+        skills = extract_skills(combined_text)
+
+        # Add grade level and category as additional tags
+        if grade_range:
+            skills.append(f"grade_{grade_range.lower().replace('-', '_')}")
+        if job_category:
+            # Normalize job category
+            category_tag = job_category.lower().replace(' ', '_').replace('-', '_')
+            skills.append(category_tag)
+
+        # Convert to JSON string
+        tags_json = skills_to_json(skills) if skills else None
 
         return {
             'job_id': f"usajobs_{position_id}",
@@ -260,6 +275,7 @@ class USAJobsScraper:
             'job_type': work_schedule,
             'description': description,
             'preview_text': preview,
+            'company_website': company_website,
             'tags': tags_json
         }
 

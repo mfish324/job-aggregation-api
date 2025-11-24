@@ -65,7 +65,7 @@ Server runs at: `http://localhost:8001`
 - **Microsoft** - Azure, Office, Windows, Gaming
 - **Meta** - Facebook, Instagram, WhatsApp
 - **Tesla** - Automotive, energy, manufacturing
-
+obs
 ### Government Jobs (Requires Free API Key)
 - **USAJOBS** - 20,000+ federal government positions
   - Department of Defense, NASA, FBI, CIA, etc.

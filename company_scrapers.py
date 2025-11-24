@@ -26,6 +26,7 @@ import re
 import xml.etree.ElementTree as ET
 import sys
 from scrapers import BaseScraper
+from skill_extractor import extract_skills, skills_to_json
 
 # Fix Windows console encoding for Unicode characters
 if sys.platform == 'win32':
@@ -103,6 +104,19 @@ class GoogleCareersScraper(BaseScraper):
                     # Clean HTML from description
                     clean_desc = BeautifulSoup(description, 'html.parser').get_text()[:500] if description else ''
 
+                    # Extract company website
+                    company_website = 'https://careers.google.com'
+
+                    # Extract skills from title and description
+                    combined_text = f"{title} {clean_desc}"
+                    skills = extract_skills(combined_text)
+
+                    # Add Google-specific tags
+                    skills.extend(['tech', 'google', 'faang'])
+
+                    # Remove duplicates
+                    skills = sorted(list(set(skills)))
+
                     jobs.append({
                         'title': title,
                         'company': employer,
@@ -113,7 +127,8 @@ class GoogleCareersScraper(BaseScraper):
                         'posted_date': self.normalize_date(published),
                         'job_type': 'Full-time' if job_type == 'FULL_TIME' else job_type,
                         'salary': None,  # Google doesn't include salary in feed
-                        'tags': json.dumps(['tech', 'google', 'faang']),
+                        'company_website': company_website,
+                        'tags': skills_to_json(skills),
                         'remote': is_remote.lower() == 'yes' if is_remote else False
                     })
 
@@ -332,6 +347,19 @@ class AmazonCareersScraper(BaseScraper):
                         posted_date = job.get('posted_date', '')
                         company_name = job.get('company_name', 'Amazon')
 
+                        # Extract company website
+                        company_website = 'https://www.amazon.jobs'
+
+                        # Extract skills from title and description
+                        combined_text = f"{title} {description}"
+                        skills = extract_skills(combined_text)
+
+                        # Add Amazon-specific tags
+                        skills.extend(['tech', 'amazon', 'faang'])
+
+                        # Remove duplicates
+                        skills = sorted(list(set(skills)))
+
                         jobs.append({
                             'title': title,
                             'company': company_name,
@@ -342,7 +370,8 @@ class AmazonCareersScraper(BaseScraper):
                             'posted_date': self.normalize_date(posted_date),
                             'job_type': 'Full-time',
                             'salary': None,
-                            'tags': json.dumps(['tech', 'amazon', 'faang']),
+                            'company_website': company_website,
+                            'tags': skills_to_json(skills),
                             'remote': job.get('is_remote', False) or 'remote' in title.lower()
                         })
 

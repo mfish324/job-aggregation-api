@@ -10,6 +10,7 @@ import json
 import time
 from typing import List, Dict
 import hashlib
+from skill_extractor import extract_skills, skills_to_json
 
 
 class WorkdayScraper:
@@ -104,6 +105,27 @@ class WorkdayScraper:
                     # Build job URL
                     job_url = company['url'] + '/' + job_data.get('externalPath', '')
 
+                    # Extract company website from Workday URL
+                    # Extract the base domain from company URL (e.g., walmart.wd5.myworkdayjobs.com -> walmart.com)
+                    if company_id == 'walmart':
+                        company_website = 'https://www.walmart.com/careers'
+                    elif company_id == 'nike':
+                        company_website = 'https://jobs.nike.com'
+                    elif company_id == 'citi':
+                        company_website = 'https://jobs.citi.com'
+                    else:
+                        company_website = company['url']
+
+                    # Extract skills from title (Workday doesn't provide full description in list API)
+                    skills = extract_skills(title)
+
+                    # Add company and workday as tags
+                    skills.append('workday')
+                    skills.append(company_id.lower())
+
+                    # Remove duplicates
+                    skills = sorted(list(set(skills)))
+
                     jobs.append({
                         'title': title,
                         'company': company['name'],
@@ -114,7 +136,8 @@ class WorkdayScraper:
                         'posted_date': self.normalize_date(posted_date),
                         'job_type': 'Full-time',
                         'salary': None,
-                        'tags': json.dumps(['workday', company_id]),
+                        'company_website': company_website,
+                        'tags': skills_to_json(skills),
                         'remote': 'remote' in locations.lower() if locations else False
                     })
 

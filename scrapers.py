@@ -7,6 +7,7 @@ import time
 from abc import ABC, abstractmethod
 from typing import List, Dict
 import re
+from skill_extractor import extract_skills, skills_to_json
 
 
 class BaseScraper(ABC):
@@ -72,6 +73,21 @@ class AdzunaScraper(BaseScraper):
                 data = response.json()
 
                 for job in data.get('results', []):
+                    # Extract company website (not available in Adzuna API)
+                    company_website = None
+
+                    # Extract skills from title and description
+                    combined_text = f"{job.get('title', '')} {job.get('description', '')}"
+                    skills = extract_skills(combined_text)
+
+                    # Add category tag if available
+                    category = job.get('category', {}).get('tag', '')
+                    if category:
+                        skills.append(category.lower().replace(' ', '_'))
+
+                    # Remove duplicates
+                    skills = sorted(list(set(skills)))
+
                     jobs.append({
                         'title': job.get('title', 'N/A'),
                         'company': job.get('company', {}).get('display_name', 'N/A'),
@@ -82,7 +98,8 @@ class AdzunaScraper(BaseScraper):
                         'posted_date': self.normalize_date(job.get('created')),
                         'job_type': job.get('contract_time', 'N/A'),
                         'salary': f"${job.get('salary_min', 0)}-${job.get('salary_max', 0)}" if job.get('salary_min') else None,
-                        'tags': json.dumps(job.get('category', {}).get('tag', '')),
+                        'company_website': company_website,
+                        'tags': skills_to_json(skills),
                         'remote': 'remote' in job.get('location', {}).get('display_name', '').lower()
                     })
 
@@ -122,6 +139,23 @@ class RemoteOKScraper(BaseScraper):
                 except:
                     posted_date = datetime.utcnow()
 
+                # Extract company website
+                company_website = job.get('company_logo', '').replace('/logo/', '').split('/')[0] if job.get('company_logo') else None
+                if company_website and not company_website.startswith('http'):
+                    company_website = f"https://{company_website}" if '.' in company_website else None
+
+                # Extract skills from title and description
+                combined_text = f"{job.get('position', '')} {job.get('description', '')}"
+                skills = extract_skills(combined_text)
+
+                # Add existing tags from RemoteOK
+                existing_tags = job.get('tags', [])
+                if existing_tags:
+                    skills.extend([tag.lower().replace(' ', '_') for tag in existing_tags if isinstance(tag, str)])
+
+                # Remove duplicates
+                skills = sorted(list(set(skills)))
+
                 jobs.append({
                     'title': job.get('position', 'N/A'),
                     'company': job.get('company', 'N/A'),
@@ -132,7 +166,8 @@ class RemoteOKScraper(BaseScraper):
                     'posted_date': posted_date,
                     'job_type': 'Full-time',
                     'salary': None,
-                    'tags': json.dumps(job.get('tags', [])),
+                    'company_website': company_website,
+                    'tags': skills_to_json(skills),
                     'remote': True
                 })
         except Exception as e:
@@ -209,6 +244,23 @@ class RemotiveScraper(BaseScraper):
                 if keywords and keywords.lower() not in json.dumps(job).lower():
                     continue
 
+                # Extract company website from job data
+                company_website = job.get('company_logo', '')
+                if company_website and not company_website.startswith('http'):
+                    company_website = None
+
+                # Extract skills from title and description
+                combined_text = f"{job.get('title', '')} {job.get('description', '')}"
+                skills = extract_skills(combined_text)
+
+                # Add category as a tag
+                category = job.get('category', '')
+                if category:
+                    skills.append(category.lower().replace(' ', '_'))
+
+                # Remove duplicates
+                skills = sorted(list(set(skills)))
+
                 jobs.append({
                     'title': job.get('title', 'N/A'),
                     'company': job.get('company_name', 'N/A'),
@@ -219,7 +271,8 @@ class RemotiveScraper(BaseScraper):
                     'posted_date': self.normalize_date(job.get('publication_date')),
                     'job_type': job.get('job_type', 'N/A'),
                     'salary': job.get('salary', None),
-                    'tags': json.dumps([job.get('category', '')]),
+                    'company_website': company_website,
+                    'tags': skills_to_json(skills),
                     'remote': True
                 })
         except Exception as e:
