@@ -12,6 +12,7 @@ from company_scrapers import (
 from indeed_rapidapi_scraper import IndeedRapidAPIScraper
 from usajobs_scraper import USAJobsScraper
 from jobspy_scraper import JobSpyScraper
+from workday_scraper import WalmartScraper, NikeScraper, CitiScraper
 from models import DatabaseManager
 from location_filter import is_us_location, filter_us_jobs
 from typing import List, Dict
@@ -48,8 +49,16 @@ class JobAggregator:
             'tesla': TeslaCareersScraper(),
         }
 
+        # Initialize Workday company scrapers
+        self.workday_companies = {
+            'walmart': WalmartScraper(),
+            'nike': NikeScraper(),
+            'citi': CitiScraper(),
+        }
+
         # Combine all scrapers
         self.scrapers.update(self.company_scrapers)
+        self.scrapers.update(self.workday_companies)
 
         # Add API-based scrapers if credentials are available
         adzuna_id = os.getenv('ADZUNA_APP_ID')
