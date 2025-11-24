@@ -217,7 +217,8 @@ class USAJobsScraper:
 
         try:
             posted_date = datetime.fromisoformat(posted_date_str.replace('Z', '+00:00'))
-            posted_str = posted_date.strftime('%Y-%m-%d')
+            # Keep as datetime object for SQLite compatibility
+            posted_str = posted_date
         except (ValueError, AttributeError):
             posted_str = None
 
