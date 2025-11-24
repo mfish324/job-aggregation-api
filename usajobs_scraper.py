@@ -29,6 +29,7 @@ Date: October 25, 2025
 import requests
 import time
 import os
+import json
 from typing import List, Dict, Optional
 from datetime import datetime, timedelta
 import logging
@@ -242,6 +243,10 @@ class USAJobsScraper:
         else:
             company = org_name
 
+        # Tags as JSON string for SQLite compatibility
+        tags_list = [grade_range, job_category] if grade_range or job_category else []
+        tags_json = json.dumps(tags_list) if tags_list else None
+
         return {
             'job_id': f"usajobs_{position_id}",
             'title': title,
@@ -255,7 +260,7 @@ class USAJobsScraper:
             'job_type': work_schedule,
             'description': description,
             'preview_text': preview,
-            'tags': [grade_range, job_category] if grade_range or job_category else []
+            'tags': tags_json
         }
 
     def search_by_keyword(
