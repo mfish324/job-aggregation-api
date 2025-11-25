@@ -16,14 +16,19 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Configure logging
+# Configure logging - use only StreamHandler for Railway compatibility
+log_handlers = [logging.StreamHandler()]
+
+# Only add file handler if we can write to the filesystem
+try:
+    log_handlers.append(logging.FileHandler('scraper.log'))
+except (PermissionError, OSError):
+    pass  # Skip file logging on Railway
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('scraper.log'),
-        logging.StreamHandler()
-    ]
+    handlers=log_handlers
 )
 logger = logging.getLogger(__name__)
 
@@ -443,9 +448,13 @@ def setup_schedule(searcher: GenZJobSearcher):
     )
     logger.info("Scheduled: Full search (5 keywords per profile) daily at 3 AM")
 
-    # Run immediately on startup
-    logger.info("Running initial priority search...")
-    searcher.run_priority_profiles()
+    # Run immediately on startup only if SCRAPE_ON_STARTUP is set
+    # This prevents long initialization times on Railway
+    if os.getenv('SCRAPE_ON_STARTUP', 'false').lower() == 'true':
+        logger.info("Running initial priority search...")
+        searcher.run_priority_profiles()
+    else:
+        logger.info("Skipping initial search (set SCRAPE_ON_STARTUP=true to enable)")
 
 
 def run_scheduler():
