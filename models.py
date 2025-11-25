@@ -22,6 +22,7 @@ class Job(Base):
     salary = Column(String(255))
     tags = Column(Text)  # JSON string of tags/skills
     remote = Column(Boolean, default=False, index=True)
+    company_website = Column(String(1000))  # Company's official website
     created_at = Column(DateTime, default=datetime.utcnow)
 
     @staticmethod
@@ -71,7 +72,7 @@ class DatabaseManager:
 
         # Valid Job model fields (excluding job_id which is set separately)
         valid_fields = {'title', 'company', 'location', 'description', 'url',
-                       'source', 'posted_date', 'job_type', 'salary', 'tags', 'remote'}
+                       'source', 'posted_date', 'job_type', 'salary', 'tags', 'remote', 'company_website'}
 
         # Filter job_data to only include valid fields
         clean_job_data = {k: v for k, v in job_data.items() if k in valid_fields}

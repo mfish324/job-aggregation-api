@@ -8,9 +8,11 @@ Add this to your scrapers.py or use as standalone module.
 import requests
 import json
 import time
+import re
 from datetime import datetime
 from abc import ABC, abstractmethod
-from typing import List, Dict
+from typing import List, Dict, Optional
+from urllib.parse import urlparse
 
 
 class IndeedRapidAPIScraper:
@@ -148,6 +150,115 @@ class IndeedRapidAPIScraper:
             )
         return []
 
+    def _extract_company_website(self, job: Dict, company_name: str, job_url: str) -> Optional[str]:
+        """
+        Extract and normalize company website from job data.
+
+        Priority order:
+        1. employer_website or company_website field from API
+        2. Extract domain from job_url (if it's a company careers page)
+        3. Infer from well-known company names
+
+        Args:
+            job: Job dictionary from API
+            company_name: Company name
+            job_url: Job posting URL
+
+        Returns:
+            Normalized company website URL or None
+        """
+        # Try explicit company_website field first
+        explicit_website = (
+            job.get('employer_website') or
+            job.get('company_website') or
+            job.get('company_url') or
+            job.get('employer_url')
+        )
+
+        if explicit_website:
+            return self._normalize_url(explicit_website)
+
+        # Extract domain from job_url if it's not Indeed/job board
+        if job_url and not any(domain in job_url.lower() for domain in ['indeed.com', 'linkedin.com', 'glassdoor.com', 'monster.com', 'ziprecruiter.com']):
+            try:
+                parsed = urlparse(job_url)
+                if parsed.netloc:
+                    # Check if it looks like a careers page
+                    if any(keyword in job_url.lower() for keyword in ['careers', 'jobs', 'apply', 'career', 'work', 'join']):
+                        # Extract root domain
+                        root_domain = f"https://{parsed.netloc.replace('www.', '')}"
+                        # Remove careers subdomain if present
+                        root_domain = re.sub(r'https://careers\.', 'https://', root_domain)
+                        root_domain = re.sub(r'https://jobs\.', 'https://', root_domain)
+                        return root_domain
+            except:
+                pass
+
+        # Infer from well-known company names
+        if company_name:
+            company_lower = company_name.lower().strip()
+
+            # Map of well-known companies to their websites
+            known_companies = {
+                'google': 'https://www.google.com',
+                'microsoft': 'https://www.microsoft.com',
+                'amazon': 'https://www.amazon.com',
+                'apple': 'https://www.apple.com',
+                'meta': 'https://www.meta.com',
+                'facebook': 'https://www.facebook.com',
+                'netflix': 'https://www.netflix.com',
+                'tesla': 'https://www.tesla.com',
+                'walmart': 'https://www.walmart.com',
+                'target': 'https://www.target.com',
+                'nike': 'https://www.nike.com',
+                'starbucks': 'https://www.starbucks.com',
+                'mcdonalds': 'https://www.mcdonalds.com',
+                'coca-cola': 'https://www.coca-cola.com',
+                'pepsico': 'https://www.pepsico.com',
+                'ibm': 'https://www.ibm.com',
+                'oracle': 'https://www.oracle.com',
+                'salesforce': 'https://www.salesforce.com',
+                'adobe': 'https://www.adobe.com',
+                'intel': 'https://www.intel.com',
+                'cisco': 'https://www.cisco.com',
+                'jpmorgan': 'https://www.jpmorgan.com',
+                'goldman sachs': 'https://www.goldmansachs.com',
+                'morgan stanley': 'https://www.morganstanley.com',
+                'bank of america': 'https://www.bankofamerica.com',
+                'wells fargo': 'https://www.wellsfargo.com',
+                'citigroup': 'https://www.citigroup.com',
+            }
+
+            # Check for exact match or substring match
+            for known_name, website in known_companies.items():
+                if known_name in company_lower or company_lower in known_name:
+                    return website
+
+        return None
+
+    def _normalize_url(self, url: str) -> str:
+        """Normalize URL to consistent format"""
+        if not url:
+            return None
+
+        url = url.strip()
+
+        # Add https:// if missing
+        if not url.startswith(('http://', 'https://')):
+            url = f"https://{url}"
+
+        # Remove trailing slash
+        url = url.rstrip('/')
+
+        # Remove query parameters and fragments
+        try:
+            parsed = urlparse(url)
+            url = f"{parsed.scheme}://{parsed.netloc}{parsed.path}".rstrip('/')
+        except:
+            pass
+
+        return url
+
     def _parse_job(self, job, default_location):
         """Parse individual job from API response"""
         try:
@@ -214,6 +325,9 @@ class IndeedRapidAPIScraper:
             if not title or not company:
                 return None
 
+            # Extract company website
+            company_website = self._extract_company_website(job, company, url)
+
             return {
                 'title': str(title),
                 'company': str(company),
@@ -225,7 +339,8 @@ class IndeedRapidAPIScraper:
                 'job_type': str(job_type),
                 'salary': str(salary) if salary else None,
                 'tags': json.dumps(job.get('tags', [])),
-                'remote': 'remote' in str(location).lower()
+                'remote': 'remote' in str(location).lower(),
+                'company_website': company_website
             }
 
         except Exception as e:
