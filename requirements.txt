@@ -12,8 +12,10 @@ pydantic>=2.12.0
 schedule>=1.2.0
 psycopg2-binary>=2.9.9
 
-# JobSpy multi-platform scraper dependencies
-python-jobspy
-tls-client
-markdownify
-selenium
+# JobSpy multi-platform scraper dependencies (optional - disabled for Railway)
+# Note: Commented out because selenium requires a browser which Railway doesn't have
+# Uncomment for local development if needed:
+# python-jobspy
+# tls-client
+# markdownify
+# selenium

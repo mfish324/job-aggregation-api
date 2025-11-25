@@ -11,8 +11,15 @@ from company_scrapers import (
 )
 from indeed_rapidapi_scraper import IndeedRapidAPIScraper
 from usajobs_scraper import USAJobsScraper
-from jobspy_scraper import JobSpyScraper
 from workday_scraper import WalmartScraper, NikeScraper, CitiScraper
+
+# JobSpy is optional - requires selenium which may not be available on all platforms
+try:
+    from jobspy_scraper import JobSpyScraper
+    JOBSPY_AVAILABLE = True
+except ImportError as e:
+    print(f"JobSpy not available: {e}")
+    JOBSPY_AVAILABLE = False
 from models import DatabaseManager
 from location_filter import is_us_location, filter_us_jobs
 from typing import List, Dict
@@ -91,7 +98,12 @@ class JobAggregator:
 
         # Add JobSpy multi-platform scraper (Indeed, LinkedIn, Glassdoor, Google)
         # This gives us access to 4 major platforms through one scraper
-        self.scrapers['jobspy'] = JobSpyScraper()
+        # Note: JobSpy requires selenium which may not be available on all platforms
+        if JOBSPY_AVAILABLE:
+            try:
+                self.scrapers['jobspy'] = JobSpyScraper()
+            except Exception as e:
+                print(f"Failed to initialize JobSpy: {e}")
 
     def scrape_all(self, keywords=None, location=None, sources=None, max_pages=5):
         """
